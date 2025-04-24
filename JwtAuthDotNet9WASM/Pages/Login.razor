@@ -1,0 +1,56 @@
+﻿@page "/login"
+@using JwtAuthDotNet9WASM.Model
+@using JwtAuthDotNet9WASM.Service
+
+<div class="mx-auto rounded border p-4" style="width: 400px; margin: 60px;">
+    <h3 class="text-center mb-3">Login</h3>
+    <hr />
+    @if (errorMessage.Length > 0)
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>@errorMessage</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <EditForm Model="userDto" OnValidSubmit="LoginAsync" FormName="loginForm">
+        
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" @bind="userDto.Username" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" @bind="userDto.Password" />
+        </div>
+
+        <div class="row">
+            <div class="col d-grid">
+                <button class="btn btn-primary">Login</button>
+            </div>
+            <div class="col d-grid">
+                <a class="btn btn-outline-primary" href="/" role="button">Cancel</a>
+            </div>
+        </div>
+    </EditForm>
+</div>
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@code {
+    public UserDto userDto { get; set; } = new UserDto();
+    string errorMessage = string.Empty;
+
+    private async Task LoginAsync()
+    {
+        var authProvider = (CustomAuthenticationStateProvider)AuthenticationStateProvider;
+        var result = await authProvider.LoginAsync(userDto);
+        if (result.Success)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = result.Errors[0];
+        }
+    }
+}

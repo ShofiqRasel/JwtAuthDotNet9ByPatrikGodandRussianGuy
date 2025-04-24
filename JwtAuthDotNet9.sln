@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtAuthDotNet9", "JwtAuthDotNet9\JwtAuthDotNet9.csproj", "{982FCA96-AEB6-4055-9663-2976A4109D53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtAuthDotNet9WASM", "JwtAuthDotNet9WASM\JwtAuthDotNet9WASM.csproj", "{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{982FCA96-AEB6-4055-9663-2976A4109D53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{982FCA96-AEB6-4055-9663-2976A4109D53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{982FCA96-AEB6-4055-9663-2976A4109D53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{982FCA96-AEB6-4055-9663-2976A4109D53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {35A94413-4753-4D03-A080-8B914B4AC3C3}
+	EndGlobalSection
+EndGlobal
