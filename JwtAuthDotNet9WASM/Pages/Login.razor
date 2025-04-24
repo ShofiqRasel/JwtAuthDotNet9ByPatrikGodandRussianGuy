@@ -12,27 +12,26 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
-    <EditForm Model="userDto" OnValidSubmit="LoginAsync" FormName="loginForm">
-        
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input class="form-control" @bind="userDto.Username" />
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-control" @bind="userDto.Password" />
-        </div>
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input class="form-control" @bind="userDto.Username" />
+    </div>
 
-        <div class="row">
-            <div class="col d-grid">
-                <button class="btn btn-primary">Login</button>
-            </div>
-            <div class="col d-grid">
-                <a class="btn btn-outline-primary" href="/" role="button">Cancel</a>
-            </div>
+
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" @bind="userDto.Password" />
+    </div>
+
+    <div class="row">
+        <div class="col d-grid">
+            <button class="btn btn-primary" @onclick="LoginAsync">Login</button>
         </div>
-    </EditForm>
+        <div class="col d-grid">
+            <a class="btn btn-outline-primary" href="/" role="button">Cancel</a>
+        </div>
+    </div>
 </div>
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider

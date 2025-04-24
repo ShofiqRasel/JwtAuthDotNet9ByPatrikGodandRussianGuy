@@ -23,23 +23,23 @@ namespace JwtAuthDotNet9WASM.Service
 
             try
             {
-                var response = await httpClient.GetAsync("usernameandid");
-                if (response.IsSuccessStatusCode)
-                {
-                    var strResponse = await response.Content.ReadAsStringAsync();
-                    var jsonNode = JsonNode.Parse(strResponse);
-                    var email = jsonNode?["Username"]?.ToString();
-
-                    var claims = new List<Claim>
+                //var response = await httpClient.GetAsync("/api/Auth/usernameandid");
+                //if (response.IsSuccessStatusCode)
+                //{
+                //var strResponse = await response.Content.ReadAsStringAsync();
+                //var jsonNode = JsonNode.Parse(strResponse);
+                //var email = jsonNode?["Username"]?.ToString();
+                var email = "shofiq.rasel@gmail.com";
+                var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, email),
                     new Claim(ClaimTypes.Email, email),
                 };
 
-                    var identity = new ClaimsIdentity(claims, "Token");
-                    user = new ClaimsPrincipal(identity);
-                    return new AuthenticationState(user);
-                }
+                var identity = new ClaimsIdentity(claims, "Token");
+                user = new ClaimsPrincipal(identity);
+                return new AuthenticationState(user);
+                //}
             }
             catch (Exception ex)
             {
@@ -61,7 +61,7 @@ namespace JwtAuthDotNet9WASM.Service
         {
             try
             {
-                var response = await httpClient.PostAsJsonAsync("login", userDto);
+                var response = await httpClient.PostAsJsonAsync("/api/Auth/login", userDto);
                 if (response.IsSuccessStatusCode)
                 {
                     var strResponse = await response.Content.ReadAsStringAsync();
