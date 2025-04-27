@@ -14,8 +14,10 @@
         <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
-                    @* <p class="my-3 m-2">Hello, @context.User.Identity?.Name!</p> *@
-                    @* <h3>Welcome, @NameIdentifier</h3> *@
+                    <p class="my-3 m-2">Hello, @context.User.Identity?.Name!</p>
+                    <p class="my-3 m-2">
+                        Welcome, @context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    </p>
                     <a class="btn btn-secondary">Logout</a>
                 </Authorized>
                 <NotAuthorized>

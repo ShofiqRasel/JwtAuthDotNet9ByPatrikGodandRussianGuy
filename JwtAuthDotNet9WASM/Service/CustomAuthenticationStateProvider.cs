@@ -15,11 +15,21 @@ namespace JwtAuthDotNet9WASM.Service
     {
         private readonly HttpClient httpClient;
         private readonly ISyncLocalStorageService localStorage;
+        private string UserName { get; set; } = string.Empty;
+        private string UserId { get; set; } = string.Empty;
 
         public CustomAuthenticationStateProvider(HttpClient httpClient, ISyncLocalStorageService localStorage)
         {
             this.httpClient = httpClient;
             this.localStorage = localStorage;
+
+            var accessToken = localStorage.GetItem<string>("accessToken");
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                UserName = JwtHelper.GetUserName(accessToken!);
+                UserId = JwtHelper.GetNameIdentifier(accessToken!);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            }
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -27,8 +37,8 @@ namespace JwtAuthDotNet9WASM.Service
             var user = new ClaimsPrincipal(new ClaimsIdentity());
             try
             {
-                string? email = localStorage.GetItemAsString("email");
-                string? userId = localStorage.GetItemAsString("userId");
+                string? email = UserName; //localStorage.GetItemAsString("email");
+                string? userId = UserId; //localStorage.GetItemAsString("userId");
 
                 if (!string.IsNullOrEmpty(email))
                 {
@@ -36,7 +46,7 @@ namespace JwtAuthDotNet9WASM.Service
                     {
                         new Claim(ClaimTypes.Name, email),
                         new Claim(ClaimTypes.Email, email),
-                        new Claim(ClaimTypes.NameIdentifier, userId), //// 🔥 Preserve NameIdentifier
+                        new Claim(ClaimTypes.NameIdentifier, userId!), //// 🔥 Preserve NameIdentifier
                     };
                     Console.WriteLine($"User ID: {userId}");
                     var identity = new ClaimsIdentity(claims, "Token");
@@ -65,14 +75,17 @@ namespace JwtAuthDotNet9WASM.Service
 
                     localStorage.SetItem("accessToken", strAccessToken);
                     localStorage.SetItem("refreshToken", strRefreshToken);
-                    localStorage.SetItem("email", userDto.Username);
+                    //localStorage.SetItem("email", userDto.Username);
 
                     // 🔥 Extract UserId (NameIdentifier) from AccessToken
-                    var userId = JwtHelper.GetNameIdentifier(strAccessToken!.ToString());
-                    if (!string.IsNullOrEmpty(userId))
-                    {
-                        localStorage.SetItem("userId", userId);
-                    }
+                    //var userId = JwtHelper.GetNameIdentifier(strAccessToken!.ToString());
+                    //if (!string.IsNullOrEmpty(userId))
+                    //{
+                    //    localStorage.SetItem("userId", userId);
+                    //}
+
+                    UserName = JwtHelper.GetUserName(strAccessToken!);
+                    UserId = JwtHelper.GetNameIdentifier(strAccessToken!);
 
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", strAccessToken);
                     NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());

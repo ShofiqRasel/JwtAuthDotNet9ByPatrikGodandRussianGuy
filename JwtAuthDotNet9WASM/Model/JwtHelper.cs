@@ -14,5 +14,15 @@ namespace JwtAuthDotNet9WASM.Model
 
             return nameIdentifier;
         }
+
+        public static string GetUserName(string jwtToken)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwtToken);
+
+            var UserName = token.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+
+            return UserName;
+        }
     }
 }
