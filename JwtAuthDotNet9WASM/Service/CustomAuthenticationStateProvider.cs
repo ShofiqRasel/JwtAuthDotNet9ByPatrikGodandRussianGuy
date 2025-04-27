@@ -36,7 +36,7 @@ namespace JwtAuthDotNet9WASM.Service
                     {
                         new Claim(ClaimTypes.Name, email),
                         new Claim(ClaimTypes.Email, email),
-                        new Claim(ClaimTypes.NameIdentifier, userId), // 🔥 Preserve NameIdentifier
+                        new Claim(ClaimTypes.NameIdentifier, userId), //// 🔥 Preserve NameIdentifier
                     };
                     Console.WriteLine($"User ID: {userId}");
                     var identity = new ClaimsIdentity(claims, "Token");
