@@ -1,12 +1,13 @@
-﻿using JwtAuthDotNet9WASM.Model;
+﻿using Blazored.LocalStorage;
+using JwtAuthDotNet9WASM.Model;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
-using System.Text.Json.Nodes;
-using Blazored.LocalStorage;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace JwtAuthDotNet9WASM.Service
 {
@@ -35,9 +36,9 @@ namespace JwtAuthDotNet9WASM.Service
                     {
                         new Claim(ClaimTypes.Name, email),
                         new Claim(ClaimTypes.Email, email),
-                        //new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+                        new Claim(ClaimTypes.NameIdentifier, userId), // 🔥 Preserve NameIdentifier
                     };
-
+                    Console.WriteLine($"User ID: {userId}");
                     var identity = new ClaimsIdentity(claims, "Token");
                     user = new ClaimsPrincipal(identity);
                     return new AuthenticationState(user);
@@ -67,7 +68,7 @@ namespace JwtAuthDotNet9WASM.Service
                     localStorage.SetItem("email", userDto.Username);
 
                     // 🔥 Extract UserId (NameIdentifier) from AccessToken
-                    var userId = GetClaimFromJwt(strAccessToken, "sub");  // "sub" claim = user id
+                    var userId = JwtHelper.GetNameIdentifier(strAccessToken!.ToString());
                     if (!string.IsNullOrEmpty(userId))
                     {
                         localStorage.SetItem("userId", userId);
@@ -98,36 +99,36 @@ namespace JwtAuthDotNet9WASM.Service
             };
         }
 
-        private string? GetClaimFromJwt(string? jwtToken, string claimType)
-        {
-            if (string.IsNullOrEmpty(jwtToken))
-                return null;
+        //private string? GetClaimFromJwt(string? jwtToken, string claimType)
+        //{
+        //    if (string.IsNullOrEmpty(jwtToken))
+        //        return null;
 
-            var parts = jwtToken.Split('.');
-            if (parts.Length != 3)
-                return null;
+        //    var parts = jwtToken.Split('.');
+        //    if (parts.Length != 3)
+        //        return null;
 
-            var payload = parts[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        //    var payload = parts[1];
+        //    var jsonBytes = ParseBase64WithoutPadding(payload);
+        //    var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
 
-            if (keyValuePairs != null && keyValuePairs.TryGetValue(claimType, out var claimValue))
-            {
-                return claimValue?.ToString();
-            }
+        //    if (keyValuePairs != null && keyValuePairs.TryGetValue(claimType, out var claimValue))
+        //    {
+        //        return claimValue?.ToString();
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        private byte[] ParseBase64WithoutPadding(string base64)
-        {
-            switch (base64.Length % 4)
-            {
-                case 2: base64 += "=="; break;
-                case 3: base64 += "="; break;
-            }
-            return Convert.FromBase64String(base64);
-        }
+        //private byte[] ParseBase64WithoutPadding(string base64)
+        //{
+        //    switch (base64.Length % 4)
+        //    {
+        //        case 2: base64 += "=="; break;
+        //        case 3: base64 += "="; break;
+        //    }
+        //    return Convert.FromBase64String(base64);
+        //}
 
     }
 

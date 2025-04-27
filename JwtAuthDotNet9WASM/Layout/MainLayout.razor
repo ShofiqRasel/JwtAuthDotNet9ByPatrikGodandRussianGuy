@@ -1,6 +1,9 @@
 ﻿@using System.Security.Claims
+@using JwtAuthDotNet9WASM.Model
 @inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@* @inject IJSRuntime JS *@
+
 
 <div class="page">
     <div class="sidebar">
@@ -12,7 +15,7 @@
             <AuthorizeView>
                 <Authorized>
                     @* <p class="my-3 m-2">Hello, @context.User.Identity?.Name!</p> *@
-                  
+                    @* <h3>Welcome, @NameIdentifier</h3> *@
                     <a class="btn btn-secondary">Logout</a>
                 </Authorized>
                 <NotAuthorized>
@@ -27,3 +30,19 @@
         </article>
     </main>
 </div>
+
+
+@* @code {
+    private string? NameIdentifier;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Read the token from localStorage
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            NameIdentifier = JwtParser.GetClaimFromJwt(token, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        }
+    }
+} *@
