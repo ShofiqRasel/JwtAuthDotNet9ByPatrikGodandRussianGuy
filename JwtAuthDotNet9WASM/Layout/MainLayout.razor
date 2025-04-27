@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Security.Claims
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -8,6 +11,8 @@
         <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
+                    @* <p class="my-3 m-2">Hello, @context.User.Identity?.Name!</p> *@
+                  
                     <a class="btn btn-secondary">Logout</a>
                 </Authorized>
                 <NotAuthorized>

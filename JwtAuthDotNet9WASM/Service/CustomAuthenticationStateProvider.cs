@@ -5,41 +5,43 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json.Nodes;
+using Blazored.LocalStorage;
+using System.Text.Json;
 
 namespace JwtAuthDotNet9WASM.Service
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly HttpClient httpClient;
+        private readonly ISyncLocalStorageService localStorage;
 
-        public CustomAuthenticationStateProvider(HttpClient httpClient)
+        public CustomAuthenticationStateProvider(HttpClient httpClient, ISyncLocalStorageService localStorage)
         {
             this.httpClient = httpClient;
+            this.localStorage = localStorage;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var user = new ClaimsPrincipal(new ClaimsIdentity());
-
             try
             {
-                //var response = await httpClient.GetAsync("/api/Auth/usernameandid");
-                //if (response.IsSuccessStatusCode)
-                //{
-                //var strResponse = await response.Content.ReadAsStringAsync();
-                //var jsonNode = JsonNode.Parse(strResponse);
-                //var email = jsonNode?["Username"]?.ToString();
-                var email = "shofiq.rasel@gmail.com";
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, email),
-                    new Claim(ClaimTypes.Email, email),
-                };
+                string? email = localStorage.GetItemAsString("email");
+                string? userId = localStorage.GetItemAsString("userId");
 
-                var identity = new ClaimsIdentity(claims, "Token");
-                user = new ClaimsPrincipal(identity);
-                return new AuthenticationState(user);
-                //}
+                if (!string.IsNullOrEmpty(email))
+                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, email),
+                        new Claim(ClaimTypes.Email, email),
+                        //new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+                    };
+
+                    var identity = new ClaimsIdentity(claims, "Token");
+                    user = new ClaimsPrincipal(identity);
+                    return new AuthenticationState(user);
+                }
             }
             catch (Exception ex)
             {
@@ -47,15 +49,6 @@ namespace JwtAuthDotNet9WASM.Service
             }
 
             return new AuthenticationState(user);
-
-            //var claims = new List<Claim>
-            //   {
-            //       new Claim(ClaimTypes.Name, "Rasel"),
-            //   };
-            //var identity = new ClaimsIdentity(claims, "ANY");
-            //var user = new ClaimsPrincipal(identity);
-
-            //return Task.FromResult(new AuthenticationState(user));
         }
         public async Task<FromResult> LoginAsync(UserDto userDto)
         {
@@ -68,6 +61,17 @@ namespace JwtAuthDotNet9WASM.Service
                     var jsonNode = JsonNode.Parse(strResponse);
                     var strAccessToken = jsonNode?["accessToken"]?.ToString();
                     var strRefreshToken = jsonNode?["refreshToken"]?.ToString();
+
+                    localStorage.SetItem("accessToken", strAccessToken);
+                    localStorage.SetItem("refreshToken", strRefreshToken);
+                    localStorage.SetItem("email", userDto.Username);
+
+                    // 🔥 Extract UserId (NameIdentifier) from AccessToken
+                    var userId = GetClaimFromJwt(strAccessToken, "sub");  // "sub" claim = user id
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        localStorage.SetItem("userId", userId);
+                    }
 
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", strAccessToken);
                     NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
@@ -93,6 +97,38 @@ namespace JwtAuthDotNet9WASM.Service
                 Errors = ["Connection Error"]
             };
         }
+
+        private string? GetClaimFromJwt(string? jwtToken, string claimType)
+        {
+            if (string.IsNullOrEmpty(jwtToken))
+                return null;
+
+            var parts = jwtToken.Split('.');
+            if (parts.Length != 3)
+                return null;
+
+            var payload = parts[1];
+            var jsonBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+
+            if (keyValuePairs != null && keyValuePairs.TryGetValue(claimType, out var claimValue))
+            {
+                return claimValue?.ToString();
+            }
+
+            return null;
+        }
+
+        private byte[] ParseBase64WithoutPadding(string base64)
+        {
+            switch (base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+            return Convert.FromBase64String(base64);
+        }
+
     }
 
     public class FromResult
