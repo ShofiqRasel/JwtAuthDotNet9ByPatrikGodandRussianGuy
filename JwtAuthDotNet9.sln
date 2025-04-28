@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtAuthDotNet9", "JwtAuthDo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtAuthDotNet9WASM", "JwtAuthDotNet9WASM\JwtAuthDotNet9WASM.csproj", "{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentUI", "FluentUI\FluentUI.csproj", "{EA7E8F78-28C2-48E0-9AD5-662F694660A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CEEDD3B-8360-4B1C-9530-3ED2AC67323B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA7E8F78-28C2-48E0-9AD5-662F694660A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA7E8F78-28C2-48E0-9AD5-662F694660A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA7E8F78-28C2-48E0-9AD5-662F694660A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA7E8F78-28C2-48E0-9AD5-662F694660A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
